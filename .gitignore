@@ -1,0 +1,8 @@
+#Exclude some files
+
+#Files 
+*.pyc
+data/config.json
+#Folders
+.git/
+__pycache__/
