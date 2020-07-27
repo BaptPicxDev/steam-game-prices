@@ -6,3 +6,4 @@ data/config.json
 #Folders
 .git/
 __pycache__/
+data/chromedriver_win32/

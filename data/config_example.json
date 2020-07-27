@@ -1,0 +1,17 @@
+{
+	"STEAM" : {
+		"API_KEY" : ""
+			},
+	"mongoDB" : {
+			"link" : "",
+			"database" : "",
+			"id" : "",
+			"pwd" : "",
+			"collections" : {
+							"games" : "",
+							"prices" : "" 
+							}
+				},
+	"chrome_path" : "",
+	"chrome_webdriver_path" : ""
+}
