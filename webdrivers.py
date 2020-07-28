@@ -11,7 +11,7 @@ import time
 from selenium import webdriver 
 from selenium.webdriver.chrome.options import Options # Webdriver options
 
-def getIds(chrome_path, chrome_webdriver_path) :
+def getIds(chrome_path, chrome_webdriver_path, limit=1) :
 	game_data = []
 	cmpt_item = 0
 	options = Options() # Set up the option
@@ -32,11 +32,11 @@ def getIds(chrome_path, chrome_webdriver_path) :
 				data = {"steam_id" : game_id, "name" : game_name, "type" : game_type}
 				if(data not in game_data) :
 					game_data.append(data)
-				print('{}.'.format(data))
+				print('Page {} Item {} | {}.'.format(page, index, data))
 				cmpt_item += 1
 			else : 
 				pass
-		if(page>=10) :
+		if(limit!="max" and page>=limit) :
 			break
 	driver.close()
 	return game_data

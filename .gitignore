@@ -3,6 +3,8 @@
 #Files 
 *.pyc
 data/config.json
+*.csv
+
 #Folders
 .git/
 __pycache__/

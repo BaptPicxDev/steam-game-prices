@@ -9,8 +9,10 @@
 
 ## Imports
 import os 
+import csv
 import time #  
 import json # Reading .json files
+import pandas as pd 
 import datetime # Time computation
 import pymongo
 import urllib.request as request
@@ -125,4 +127,34 @@ def getCollectionItems(collection) :
 			- collection : mongoDB collection.
 			- items :  list of item (=list of dictionnary). 
 	"""
-	return list(collection.find())
+	return list(collection.find({}))
+
+def collectionToCSV(collection) : 
+	"""
+		overview : collection to .csv file.
+		inputs : 
+			- collection : mongoDB collection.
+	"""
+	a = []
+	data = collection.find({})
+	csv_file_name = str(collection.name).replace('-', '_')+".csv"
+	if os.path.exists('./data/'+csv_file_name) :
+		deleteFile('./data/'+csv_file_name)
+	df = pd.DataFrame(list(data))
+	df = df.drop('_id', axis=1)
+	try : 
+		df.to_csv('./data/'+csv_file_name)
+		print("File ./data/"+csv_file_name+" created.")
+	except Exception as exc : 
+		print("Unble to create th file : ./data/"+csv_file_name) 
+		print(exc)
+
+def deleteFile(file) :
+	"""
+		overview : delete a  file.
+		inputs : 
+			- file :  file.
+	"""
+	if os.path.exists(file) :
+		os.remove(file)
+		print('File ',file,' deleted.')
