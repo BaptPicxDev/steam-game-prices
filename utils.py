@@ -45,8 +45,19 @@ def getTypePropotion(collection_games) :
 
 def getPriceEvolution(collection_prices, steam_id) : 
 	print("Visualization of the evolution of a steam game :  {}".format(steam_id))
-	if(collection_games.documentExistsOrNotDemo.find({"steam_id" : steam_id}).count() > 0) : 
-		item = collection_prices.find_one({'steam_id' : steam_id})
-		print(item)
+	if(collection_prices.find({'steam_id' : steam_id}).count() > 0) : 
+		prices = collection_prices.find_one({'steam_id' : steam_id})['prices']
+		x, y, ticks = [], [], []
+		for item in prices : 
+			x.append(item['index'])
+			ticks.append(str(item['datetime'].strftime("%d/%m/%Y")))
+			y.append(item['price'])
+		plt.figure(figsize=(16,9))
+		plt.title("Price evolution of "+str(collection_prices.find_one({'steam_id' : steam_id})['steam_id']))
+		plt.xticks([i for i in range(0, len(prices), 1)], ticks, rotation=45)
+		sns.lineplot(x=x, y=y, markers=True)
+		plt.xlabel("Time")
+		plt.ylabel("Price ("+prices[0]['currency']+")")
+		plt.show()
 	else  :
 		print('No steam app : {}'.format(steam_id)) 
