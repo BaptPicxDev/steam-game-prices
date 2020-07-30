@@ -50,7 +50,7 @@ def getPriceEvolution(collection_prices, steam_id) :
 		x, y, ticks = [], [], []
 		for item in prices : 
 			x.append(item['index'])
-			ticks.append(str(item['datetime'].strftime("%d/%m/%Y")))
+			ticks.append(str(item['date']))
 			y.append(item['price'])
 		plt.figure(figsize=(16,9))
 		plt.title("Price evolution of "+str(collection_prices.find_one({'steam_id' : steam_id})['steam_id']))

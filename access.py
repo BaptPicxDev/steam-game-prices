@@ -111,20 +111,23 @@ def fillPricesCollection(games_collection, prices_collection) :
 			if('price_overview' in data['data'].keys()) : 
 				prices = data['data']['price_overview']
 				new_price = {
-						"index" : 0, "datetime" : datetime.datetime.now(), 'is_free' : False, 'currency': prices['currency'], 
+						"index" : 0, "date" : datetime.date.today().strftime('%Y-%m-%d'), 'is_free' : False, 'currency': prices['currency'], 
 						'discount_percent': prices['discount_percent'], 
 						'price': float(prices['final_formatted'].replace(',', '.').replace('-', '').replace('€', ''))
 						}
 			else : 
 				prices = data['data']
 				new_price = {
-						"index" : 0, "datetime" : datetime.datetime.now(), "is_free": prices['is_free'], 
+						"index" : 0, "date" : datetime.date.today().strftime('%Y-%m-%d'), "is_free": prices['is_free'], 
 						"currency": "EUR", "discount_percent": 0, "price": 0.0
 						}
 			if(prices_collection.find({"steam_id" : item["steam_id"]}).count() > 0) :
 				new_price['index'] = len(prices_collection.find_one({"steam_id" : item["steam_id"]})['prices'])
-				prices_collection.update_one({"steam_id" : item["steam_id"]},{'$push': {'prices': new_price}})
-				print("{} - {} filled : {} - {}".format(index, prices_collection.name, cmpt + 1, prices_collection.find_one({"steam_id" : item["steam_id"]})['steam_id']))
+				if(prices_collection.find_one({'steam_id' : item["steam_id"]})['prices'][-1]["date"] != new_price['date']) :
+					prices_collection.update_one({"steam_id" : item["steam_id"]},{'$push': {'prices': new_price}})
+					print("{} - {} filled : {} - {}".format(index, prices_collection.name, cmpt + 1, prices_collection.find_one({"steam_id" : item["steam_id"]})['steam_id']))
+				else : 
+					print("{} - {} can't be filled. There is already a price the {} for {} ".format(index, prices_collection.name, prices_collection.find_one({"steam_id" : item["steam_id"]})["steam_id"], new_price['date'], prices_collection.find_one({"steam_id" : item["steam_id"]})['steam_id']))
 			else : 
 				new_item = {"index" : prices_collection.find({}).count(), "steam_id" : item["steam_id"], "prices" : [new_price]}
 				prices_collection.insert_one(new_item)
