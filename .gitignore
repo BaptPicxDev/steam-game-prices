@@ -13,3 +13,6 @@ data/chromedriver_win32/
 Inclues/
 Lib/
 Scripts/
+bin/
+include/
+lib/

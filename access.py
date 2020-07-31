@@ -66,7 +66,7 @@ def fillGamesCollection(games_collection, items) :
 	cmpt = 0
 	for index_item, item in enumerate(items) : 
 		if(games_collection.find({"steam_id" : item["steam_id"]}).count() > 0 ) :
-			print("Steam App {} already exists.".format(games_collection.name, item["steam_id"]))
+			print("{}/{} - Steam App {} already exists.".format(index, len(items), games_collection.name, item["steam_id"]))
 		else :
 			item['index'] = games_collection.count()
 			item['steam_id'] = int(item['steam_id'])
@@ -84,7 +84,7 @@ def fillGamesCollection(games_collection, items) :
 					print("{} - Can't loaded data from Steam API : {}".format(index_item, exc))
 					time.sleep(20)
 			games_collection.insert_one(item)
-			print("{} filled : {} - {}".format(games_collection.name, cmpt + 1, games_collection.find_one({"steam_id" : item["steam_id"]})['steam_id']))
+			print("{}/{} - {} filled : {} - {}".format(index, len(items), games_collection.name, cmpt + 1, games_collection.find_one({"steam_id" : item["steam_id"]})['steam_id']))
 			cmpt += 1
 	print('Collection filled with ',cmpt,' items.')
 
@@ -99,42 +99,45 @@ def fillPricesCollection(games_collection, prices_collection) :
 	print('Fill the collection : ', str(prices_collection.name))
 	cmpt = 0
 	for index, item in enumerate(games_collection.find({})) :
-		flag = True
-		while(flag) : 		
-			try : 
-				data = json.load(request.urlopen('http://store.steampowered.com/api/appdetails?appids='+str(item["steam_id"])))[str(item["steam_id"])]
-				flag = False 
-			except Exception as excp :
-				print("{} - {}.".format(index, excp))
-				time.sleep(60)			 
-		if(data['success'] == True) :
-			if('price_overview' in data['data'].keys()) : 
-				prices = data['data']['price_overview']
-				new_price = {
-						"index" : 0, "date" : datetime.date.today().strftime('%Y-%m-%d'), 'is_free' : False, 'currency': prices['currency'], 
-						'discount_percent': prices['discount_percent'], 
-						'price': float(prices['final_formatted'].replace(',', '.').replace('-', '').replace('€', ''))
-						}
-			else : 
-				prices = data['data']
-				new_price = {
-						"index" : 0, "date" : datetime.date.today().strftime('%Y-%m-%d'), "is_free": prices['is_free'], 
-						"currency": "EUR", "discount_percent": 0, "price": 0.0
-						}
-			if(prices_collection.find({"steam_id" : item["steam_id"]}).count() > 0) :
-				new_price['index'] = len(prices_collection.find_one({"steam_id" : item["steam_id"]})['prices'])
-				if(prices_collection.find_one({'steam_id' : item["steam_id"]})['prices'][-1]["date"] != new_price['date']) :
-					prices_collection.update_one({"steam_id" : item["steam_id"]},{'$push': {'prices': new_price}})
-					print("{} - {} filled : {} - {}".format(index, prices_collection.name, cmpt + 1, prices_collection.find_one({"steam_id" : item["steam_id"]})['steam_id']))
+		if(prices_collection.find({"steam_id" : item["steam_id"]}).count() == 0 or prices_collection.find_one({"steam_id" : item["steam_id"]})['prices'][-1]['date'] < datetime.date.today().strftime('%Y-%m-%d')) :
+			flag = True
+			while(flag) : 		
+				try : 
+					data = json.load(request.urlopen('http://store.steampowered.com/api/appdetails?appids='+str(item["steam_id"])))[str(item["steam_id"])]
+					flag = False 
+				except Exception as excp :
+					print("{} - {}.".format(index, excp))
+					time.sleep(60)			 
+			if(data['success'] == True) :
+				if('price_overview' in data['data'].keys()) : 
+					prices = data['data']['price_overview']
+					new_price = {
+							"index" : 0, "date" : datetime.date.today().strftime('%Y-%m-%d'), 'is_free' : False, 'currency': prices['currency'], 
+							'discount_percent': prices['discount_percent'], 
+							'price': float(prices['final_formatted'].replace(',', '.').replace('-', '').replace('€', '').replace('CDN$', '').replace(' ', ''))
+							}
 				else : 
-					print("{} - {} can't be filled. There is already a price the {} for {} ".format(index, prices_collection.name, prices_collection.find_one({"steam_id" : item["steam_id"]})["steam_id"], new_price['date'], prices_collection.find_one({"steam_id" : item["steam_id"]})['steam_id']))
+					prices = data['data']
+					new_price = {
+							"index" : 0, "date" : datetime.date.today().strftime('%Y-%m-%d'), "is_free": prices['is_free'], 
+							"currency": "EUR", "discount_percent": 0, "price": 0.0
+							}
+				if(prices_collection.find({"steam_id" : item["steam_id"]}).count() > 0) :
+					new_price['index'] = len(prices_collection.find_one({"steam_id" : item["steam_id"]})['prices'])
+					if(prices_collection.find_one({'steam_id' : item["steam_id"]})['prices'][-1]["date"] != new_price['date']) :
+						prices_collection.update_one({"steam_id" : item["steam_id"]},{'$push': {'prices': new_price}})
+						print("{}/{} - {} filled : {} - {}".format(index, games_collection.find({}).count(), prices_collection.name, cmpt + 1, prices_collection.find_one({"steam_id" : item["steam_id"]})['steam_id']))
+					else : 
+						print("{}/{} - {} can't be filled. There is already a price for {} the {} ".format(index, games_collection.find({}).count(), prices_collection.name, prices_collection.find_one({"steam_id" : item["steam_id"]})["steam_id"], prices_collection.find_one({"steam_id" : item["steam_id"]})['steam_id'], new_price['date']))
+				else : 
+					new_item = {"index" : prices_collection.find({}).count(), "steam_id" : item["steam_id"], "prices" : [new_price]}
+					prices_collection.insert_one(new_item)
+					print("{}/{} - {} filled by a new item : {} - {}".format(index, games_collection.find({}).count(), prices_collection.name, cmpt + 1, new_item["steam_id"]))
+				cmpt += 1
 			else : 
-				new_item = {"index" : prices_collection.find({}).count(), "steam_id" : item["steam_id"], "prices" : [new_price]}
-				prices_collection.insert_one(new_item)
-				print("{} - {} filled by a new item : {} - {}".format(index, prices_collection.name, cmpt + 1, new_item["steam_id"]))
-			cmpt += 1
+				pass
 		else : 
-			pass
+			print("{}/{} - {} don't need to be filled : There is already a price for {} the {} ".format(index, games_collection.find({}).count(), prices_collection.name, prices_collection.find_one({"steam_id" : item["steam_id"]})['steam_id'], datetime.date.today().strftime('%Y-%m-%d')))
 	print('Collection filled with ',cmpt,' items.')
 
 def getCollectionItems(collection) :
