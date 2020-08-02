@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 #############################################
 # author : Baptiste PICARD 		 			#
 # date : 29/07/2020				 			#
@@ -8,9 +10,7 @@
 #############################################
 
 # Imports
-import pandas as pd 
 
-# Modules 
-from access import * 
+# Modules
 
 # Functions 

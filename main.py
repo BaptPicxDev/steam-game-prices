@@ -33,7 +33,6 @@ ERASE = False
 TOJSON = False
 RASP = False
 
-
 if __name__ == "__main__" :
 	print("The script is starting.")
 	start = datetime.datetime.now()
@@ -43,12 +42,12 @@ if __name__ == "__main__" :
 	database = openDatabase(variables['mongoDB'])	
 	games_collection = getCollection(database, variables['mongoDB']['collections']['games'])
 	prices_collection = getCollection(database, variables['mongoDB']['collections']['prices'])
-	# games = getIds(variables["chrome_path"], variables["chrome_webdriver_path"], limit=3)
+	games = getIds(variables["chrome_webdriver_path"], limit=3)
 	if(ERASE) : 
 		eraseCollection(games_collection)
 		eraseCollection(prices_collection)
-	# fillGamesCollection(games_collection, games)
-	# fillPricesCollection(games_collection, prices_collection)
+	fillGamesCollection(games_collection, games)
+	fillPricesCollection(games_collection, prices_collection)
 	if(TOJSON) : 
 		collectionToCSV(games_collection)
 	verifyCollection(games_collection)
@@ -57,6 +56,5 @@ if __name__ == "__main__" :
 	# getCollectionInfo(prices_collection)
 	# getTypePropotion(games_collection)
 	# eraseDualSteamAppItems(games_collection)
-	# verifyCollection(games_collection)
-	# getPriceEvolution(prices_collection, 787860)
+	getPriceEvolution(prices_collection, 787860)
 	print("It takes {} seconds to reach the end of this script.".format(datetime.datetime.now() - start))

@@ -9,10 +9,9 @@
 # Imports
 import time
 from selenium import webdriver 
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.chrome.options import Options # Webdriver options
+# from selenium.webdriver.chrome.options import Options # Webdriver options
 
-def getIds(chrome_path, chrome_webdriver_path, limit=1) :
+def getIds(chrome_webdriver_path, limit=1) :
 	game_data = []
 	cmpt_item, cmpt_access = 0, 0
 	driver = webdriver.Chrome(chrome_webdriver_path) # chrome_options=options, executable_path=chrome_webdriver_path / Creating the Web driver

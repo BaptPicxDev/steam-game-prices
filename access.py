@@ -18,7 +18,7 @@ import pandas as pd
 import datetime # Time computation
 try : 
 	from urllib2 import urlopen
-except Exception as exc : 
+except Exception : 
 	from urllib.request import urlopen
 
 # Modules 

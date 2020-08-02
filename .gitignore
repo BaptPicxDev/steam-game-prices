@@ -1,17 +1,17 @@
-#Exclude some files
+# Exclude some files
 
-#Files 
+# Files 
 *.pyc
 *.csv
 pyvenv.cfg
 
-#Folders
+# Folders
 .git/
 __pycache__/
 data/chromedriver/
-Inclues/
+Include/
+include/
 Lib/
+lib/
 Scripts/
 bin/
-include/
-lib/
