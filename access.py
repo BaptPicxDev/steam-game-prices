@@ -9,15 +9,17 @@
 #											#
 #############################################
 
-## Imports
+# Imports
 import os 
-import csv
-import time #  
+import time   
 import json # Reading .json files
+import pymongo
 import pandas as pd 
 import datetime # Time computation
-import pymongo
-from urllib2 import urlopen
+try : 
+	from urllib2 import urlopen
+except Exception as exc : 
+	from urllib.request import urlopen
 
 # Modules 
 
@@ -67,8 +69,8 @@ def fillGamesCollection(games_collection, items) :
 	print('{} items to check.'.format(str(len(items))))
 	cmpt = 0
 	for index_item, item in enumerate(items) : 
-		if(games_collection.find({"steam_id" : item["steam_id"]}).count() > 0 ) :
-			print("{}/{} - Steam App {} already exists.".format(index, len(items), games_collection.name, item["steam_id"]))
+		if(games_collection.find({"steam_id" : int(item["steam_id"])}).count() > 0 ) :
+			print("{}/{} - Steam App {} already exists.".format(index_item, len(items), games_collection.name, item["steam_id"]))
 		else :
 			item['index'] = games_collection.count()
 			item['steam_id'] = int(item['steam_id'])
@@ -86,7 +88,7 @@ def fillGamesCollection(games_collection, items) :
 					print("{} - Can't loaded data from Steam API : {}".format(index_item, exc))
 					time.sleep(20)
 			games_collection.insert_one(item)
-			print("{}/{} - {} filled : {} - {}".format(index, len(items), games_collection.name, cmpt + 1, games_collection.find_one({"steam_id" : item["steam_id"]})['steam_id']))
+			print("{}/{} - {} filled : {} - {}".format(index_item, len(items), games_collection.name, cmpt + 1, games_collection.find_one({"steam_id" : item["steam_id"]})['steam_id']))
 			cmpt += 1
 	print('Collection filled with ',cmpt,' items.')
 
@@ -180,3 +182,22 @@ def deleteFile(file) :
 	if os.path.exists(file) :
 		os.remove(file)
 		print('File ',file,' deleted.')
+
+def verifyCollection(collection) : 
+	unique_ids = collection.distinct("steam_id")
+	print("{} : {} errors".format(collection.name, collection.count() - len(unique_ids)))
+
+def eraseDualSteamAppItems(collection) : 
+	cursor = collection.aggregate([
+		{
+		"$group" : {
+			"_id" : {"steam_id" : "$steam_id"},
+			"objects" : {"$addToSet" : "$_id"},
+			"count" : {"$sum" : 1}
+			}
+		}
+	])
+	for it in cursor : 
+		if(it['count'] >=2) :
+			for i in range(0, len(it['objects'])-1) :
+				collection.remove({"_id": it['objects'][i]})

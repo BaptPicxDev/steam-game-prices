@@ -1,0 +1,24 @@
+{
+	"STEAM" : {
+		"API_KEY" : "CA53370BE0CC7B43C0E875ED8FA14FB0",
+		"id" : "baptgore"
+			},
+	"DMARKET" : {
+		"PUBLIC_KEY" : "46aec0ceb93fbc538cb2ecd130c41ea2a293aa7005171fef938800c242cca49e",
+		"id" : "picard.baptiste@laposte.net",
+		"pwd" : "DZEzDe5q8mXYR9Z"
+			},
+	"mongoDB" : {
+			"link" : "mongodb+srv://<user>:<password>@cluster0.f6bqv.mongodb.net/<dbname>?retryWrites=true&w=majority",
+			"database" : "steam",
+			"id" : "steam-user",
+			"pwd" : "pop396el",
+			"collections" : {
+							"games" : "steam-games",
+							"prices" : "steam-prices" 
+							}
+				},
+	"chrome_path" : "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe",
+	"chrome_webdriver_path" : "C:/Users/picar/Documents/steam-game-prices/data/chromedriver.exe"
+}
+

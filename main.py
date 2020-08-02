@@ -8,7 +8,7 @@
 #											#
 #############################################
 
-## Imports
+# Imports
 import sys
 import json # Reading .json files
 import datetime # Time computation
@@ -17,17 +17,21 @@ from gpiozero import CPUTemperature # Rasp GPU Temperature
 # Modules 
 from access import * 
 from webdrivers import * 
-# from utils import * # Not for the Raspy 
+from utils import * # Not for the Raspy 
 
 # Constants
 DATA_PATH = './data/config.json'
 
 # Set-Up and Environment.
-reload(sys)
-sys.setdefaultencoding('utf8')
+try :  
+	reload(sys)
+	sys.setdefaultencoding('utf8')
+except Exception as exc : 
+	pass
+
 ERASE = False
 TOJSON = False
-RASP = True
+RASP = False
 
 
 if __name__ == "__main__" :
@@ -44,11 +48,15 @@ if __name__ == "__main__" :
 		eraseCollection(games_collection)
 		eraseCollection(prices_collection)
 	# fillGamesCollection(games_collection, games)
-	fillPricesCollection(games_collection, prices_collection)
+	# fillPricesCollection(games_collection, prices_collection)
 	if(TOJSON) : 
 		collectionToCSV(games_collection)
+	verifyCollection(games_collection)
+	verifyCollection(prices_collection)
 	# getCollectionInfo(games_collection)
 	# getCollectionInfo(prices_collection)
 	# getTypePropotion(games_collection)
+	# eraseDualSteamAppItems(games_collection)
+	# verifyCollection(games_collection)
 	# getPriceEvolution(prices_collection, 787860)
 	print("It takes {} seconds to reach the end of this script.".format(datetime.datetime.now() - start))
