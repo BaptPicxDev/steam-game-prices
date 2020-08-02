@@ -4,6 +4,7 @@
 *.pyc
 *.csv
 pyvenv.cfg
+data/config.json
 
 # Folders
 .git/
