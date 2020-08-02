@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 #############################################
 # author : Baptiste PICARD 		 			#
 # date : 26/07/2020				 			#
@@ -15,7 +17,7 @@ import json # Reading .json files
 import pandas as pd 
 import datetime # Time computation
 import pymongo
-import urllib.request as request
+from urllib2 import urlopen
 
 # Modules 
 
@@ -73,7 +75,7 @@ def fillGamesCollection(games_collection, items) :
 			flag = True  
 			while(flag) : 
 				try : 
-					data = json.load(request.urlopen('http://store.steampowered.com/api/appdetails?appids='+str(item["steam_id"])))[str(item["steam_id"])]
+					data = json.load(urlopen('http://store.steampowered.com/api/appdetails?appids='+str(item["steam_id"])))[str(item["steam_id"])]
 					if(data['success']==True and 'release_date' in data['data'].keys()) :
 						item['release_date'] = data['data']['release_date']['date']
 						item['coming_soon'] = data['data']['release_date']['coming_soon']
@@ -103,7 +105,7 @@ def fillPricesCollection(games_collection, prices_collection) :
 			flag = True
 			while(flag) : 		
 				try : 
-					data = json.load(request.urlopen('http://store.steampowered.com/api/appdetails?appids='+str(item["steam_id"])))[str(item["steam_id"])]
+					data = json.load(urlopen('http://store.steampowered.com/api/appdetails?appids='+str(item["steam_id"])))[str(item["steam_id"])]
 					flag = False 
 				except Exception as excp :
 					print("{} - {}.".format(index, excp))
@@ -114,7 +116,7 @@ def fillPricesCollection(games_collection, prices_collection) :
 					new_price = {
 							"index" : 0, "date" : datetime.date.today().strftime('%Y-%m-%d'), 'is_free' : False, 'currency': prices['currency'], 
 							'discount_percent': prices['discount_percent'], 
-							'price': float(prices['final_formatted'].replace(',', '.').replace('-', '').replace('€', '').replace('CDN$', '').replace(' ', ''))
+							'price': float(prices['final_formatted'].replace(',', '.').replace('-', '').replace('€', '').replace('CDN$', ''))
 							}
 				else : 
 					prices = data['data']
