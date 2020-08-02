@@ -3,13 +3,16 @@
 #Files 
 *.pyc
 *.csv
+*~
 data/config.json
+data/chromedriver
 pyvenv.cfg
 
 #Folders
 .git/
 __pycache__/
 data/chromedriver_win32/
+data/chromedriver
 Inclues/
 Lib/
 Scripts/
