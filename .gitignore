@@ -3,6 +3,7 @@
 # Files 
 *.pyc
 *.csv
+\~*~
 pyvenv.cfg
 data/config.json
 
@@ -10,9 +11,7 @@ data/config.json
 .git/
 __pycache__/
 data/chromedriver/
-Include/
-include/
-Lib/
-lib/
+[iI]nclude/
+[Ll]ib/
 Scripts/
 bin/
