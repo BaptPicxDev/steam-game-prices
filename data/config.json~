@@ -1,0 +1,15 @@
+{
+	"mongoDB" : {
+			"link" : "mongodb+srv://<user>:<password>@cluster0.f6bqv.mongodb.net/<dbname>?retryWrites=true&w=majority",
+			"database" : "steam",
+			"id" : "steam-user",
+			"pwd" : "pop396el",
+			"collections" : {
+							"games" : "steam-games",
+							"prices" : "steam-prices" 
+							}
+				},
+	"chrome_path" : "/usr/lib/chromium-browser/chromedriver",
+	"chrome_webdriver_path" : "C:/Users/picar/Documents/steam-game-prices/data/chromedriver/chromedriver.exe"
+}
+

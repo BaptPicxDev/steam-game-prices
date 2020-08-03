@@ -3,27 +3,32 @@
 # date : 26/07/2020				 			#
 # 								 			#
 # overview : Retrieving steam game prices.  #
-#											#
+#														#
 #############################################
 
 # Imports
 import time
 from selenium import webdriver 
-# from selenium.webdriver.chrome.options import Options # Webdriver options
+from fake_useragent import UserAgent
 
-def getIds(chrome_webdriver_path, limit=1) :
+def getIds(chrome_webdriver_path, limit=1, headless=False) :
 	game_data = []
 	cmpt_item, cmpt_access = 0, 0
-	driver = webdriver.Chrome(chrome_webdriver_path) # chrome_options=options, executable_path=chrome_webdriver_path / Creating the Web driver
+	opts = webdriver.ChromeOptions()
+	opts.add_argument("user-agent="+str(UserAgent().random))
+	opts.add_argument("--start-maximized")
+	if(headless) : 
+		opts.add_argument('--headless')
+	driver = webdriver.Chrome(chrome_options=opts, executable_path=chrome_webdriver_path) # chrome_options=options, executable_path=chrome_webdriver_path / Creating the Web driver
 	driver.get("https://steamdb.info/apps/") 
 	time.sleep(10)
 	flag = True
-	while(flag==True and cmpt_access<=10) :
+	while(flag==True and cmpt_access<=20) :
 		try :
 			n_pages = int(driver.find_element_by_xpath("/html/body/div[1]/div[1]/div[3]/div/h1[1]").text.split('/')[-1])
 			flag = False		
 		except Exception as exc :
-			print("Can't load the data : {}".format(exc))
+			print("{} : Can't load the data : {}".format(cmpt_access, exc))
 			driver.get("https://steamdb.info/apps/") 
 			time.sleep(10)
 		cmpt_access+=1
