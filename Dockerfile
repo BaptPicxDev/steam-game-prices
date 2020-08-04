@@ -10,4 +10,4 @@ RUN pip install -r requirements.txt
 # Copy local files
 COPY . .
 
-RUN python3 main.py
+RUN python main.py
