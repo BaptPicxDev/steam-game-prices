@@ -3,7 +3,7 @@
 # Files 
 *.pyc
 *.csv
-\~*~
+\~
 pyvenv.cfg
 data/config.json
 
