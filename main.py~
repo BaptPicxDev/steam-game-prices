@@ -31,7 +31,7 @@ except Exception as exc :
 
 ERASE = False
 TOJSON = False
-RASP = False
+RASP = True
 
 if __name__ == "__main__" :
 	print("The script is starting.")

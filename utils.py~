@@ -63,23 +63,3 @@ def getPriceEvolution(collection_prices, steam_id) :
 		plt.show()
 	else  :
 		print('No steam app : {}'.format(steam_id)) 
-
-def collectionToCSV(collection) : 
-	"""
-		overview : collection to .csv file.
-		inputs : 
-			- collection : mongoDB collection.
-	"""
-	a = []
-	data = collection.find({})
-	csv_file_name = str(collection.name).replace('-', '_')+".csv"
-	if os.path.exists('./data/'+csv_file_name) :
-		deleteFile('./data/'+csv_file_name)
-	df = pd.DataFrame(list(data))
-	df = df.drop('_id', axis=1)
-	try : 
-		df.to_csv('./data/'+csv_file_name)
-		print("File ./data/"+csv_file_name+" created.")
-	except Exception as exc : 
-		print("Unble to create th file : ./data/"+csv_file_name) 
-		print(exc)

@@ -4,8 +4,8 @@ FROM python:3.7
 WORKDIR /app
 
 # Install python dependencies
-COPY requirements.txt . 
-RUN pip install -r requirements.txt 
+COPY requirements_rasp.txt . 
+RUN pip install -r requirements_rasp.txt 
 
 # Copy local files
 COPY . .
